@@ -82,6 +82,58 @@ myitronline_new/
 
 ---
 
+## Setting up on a new machine
+
+`vendor/`, `node_modules/` and all `.env` files are intentionally **not** in git, so a
+fresh clone needs four things installed and four things generated. Full sequence:
+
+```powershell
+# 1. Clone
+git clone https://github.com/mayankm738/myitronline_new.git
+cd myitronline_new
+
+# 2. Backend dependencies (creates vendor/, ~80 packages)
+cd backend
+composer install
+
+# 3. Backend environment
+Copy-Item .env.example .env
+php artisan key:generate            # .env.example ships an empty APP_KEY on purpose
+
+# 4. Create the database, then migrate
+#    In phpMyAdmin / MySQL client:
+#      CREATE DATABASE myitronline_new CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+php artisan migrate
+
+# 5. Frontend dependencies and environment
+cd ../frontend
+npm install
+Copy-Item .env.example .env
+```
+
+Then start both servers (each in its own terminal) and open
+**http://127.0.0.1:5173**:
+
+```powershell
+cd backend;  php artisan serve --host=127.0.0.1 --port=5555
+cd frontend; npm run dev
+```
+
+On macOS or Linux, replace `Copy-Item .env.example .env` with `cp .env.example .env`.
+
+**Things that trip people up on a fresh clone**
+
+| Symptom | Cause |
+| ------- | ----- |
+| `Could not open input file: artisan` | You are in the repo root; `artisan` lives in `backend/`. |
+| `No application encryption key has been specified` | Skipped `php artisan key:generate`. |
+| `SQLSTATE[HY000] [1049] Unknown database` | The database was never created (step 4). |
+| `Your Composer dependencies require a PHP version >= 8.3` | PHP is older than 8.3 — see Prerequisites. |
+| Frontend loads but health check fails | Laravel is not running, or `API_PROXY_TARGET` points at the wrong port. |
+| `Missing required environment variable "VITE_API_BASE_URL"` | Skipped copying `frontend/.env.example`. |
+
+---
+
 ## Backend setup (Laravel API)
 
 ```powershell
