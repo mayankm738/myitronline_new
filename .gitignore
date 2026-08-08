@@ -1,0 +1,14 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Environment files are per-machine; commit the .example files instead.
+.env
+.env.*
+!.env.example
+
+# Dependencies and build output are ignored inside backend/ and frontend/
+# by their own .gitignore files.
