@@ -1,15 +1,18 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router-dom';
 
-/**
- * Shell rendered around every route. Header, navigation and footer belong here
- * once the real design exists.
- */
+import Navbar from '../components/home/Navbar';
+import Footer from '../components/home/Footer';
+
 export default function RootLayout() {
-  return (
-    <div className="app-shell">
-      <main>
-        <Outlet />
-      </main>
-    </div>
-  )
+return ( <div className="app-shell"> <Navbar />
+
+
+  <main className="main-content">
+    <Outlet />
+  </main>
+
+  <Footer />
+</div>
+
+);
 }
