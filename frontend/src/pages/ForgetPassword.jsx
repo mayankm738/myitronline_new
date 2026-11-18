@@ -79,7 +79,7 @@ export default function ForgetPassword() {
           </p>
 
           <ol className="relative mt-9 space-y-6">
-            <div className="absolute bottom-4 left-[19px] top-4 w-px" style={{ backgroundColor: 'rgba(255,255,255,0.22)' }} />
+            <div className="absolute bottom-4 left-4.75 top-4 w-px" style={{ backgroundColor: 'rgba(255,255,255,0.22)' }} />
             {steps.map((step, i) => {
               const Icon = step.icon
               return (
@@ -120,14 +120,7 @@ export default function ForgetPassword() {
 
           {!submitted ? (
             <>
-              <Link
-                to="/login"
-                className="fp-sans fp-link mb-8 hidden items-center gap-1.5 rounded-sm text-sm font-semibold lg:inline-flex"
-                style={{ color: inkFaint }}
-              >
-                <ArrowLeft size={15} strokeWidth={2.25} />
-                Back to login
-              </Link>
+
 
               <h1 className="fp-display text-3xl font-medium leading-[1.1]" style={{ color: ink }}>
                 Forgot your password?
@@ -161,15 +154,15 @@ export default function ForgetPassword() {
                   Send reset link
                 </button>
               </form>
-
               <Link
                 to="/login"
-                className="fp-sans fp-link mt-6 flex items-center justify-center gap-1.5 text-sm font-semibold lg:hidden"
-                style={{ color: inkFaint }}
+                className="fp-sans fp-link w-full text-gray-700 hover:text-green-800 mb-8 mt-5 hidden items-center justify-center gap-1.5 rounded-sm text-sm font-semibold lg:inline-flex"
+
               >
                 <ArrowLeft size={15} strokeWidth={2.25} />
                 Back to login
               </Link>
+
             </>
           ) : (
             <>
@@ -187,13 +180,7 @@ export default function ForgetPassword() {
                 <span className="font-semibold" style={{ color: ink }}>{email}</span>, you&apos;ll receive
                 instructions to reset your password shortly.
               </p>
-              <Link
-                to="/login"
-                className="fp-sans fp-ghost fp-btn mt-8 flex w-full items-center justify-center rounded-xl px-5 py-3.5 text-sm font-bold"
-                style={{ border: `1px solid ${line}`, color: ink }}
-              >
-                Back to login
-              </Link>
+
             </>
           )}
         </div>

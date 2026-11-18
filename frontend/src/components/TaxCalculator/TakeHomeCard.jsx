@@ -1,34 +1,63 @@
-export default function TakeHomeCard({ income, tax }) {
-  const takeHome = Math.max(income - tax, 0)
-  const monthly = Math.round(takeHome / 12)
+import { theme, formatINR } from './taxShared'
 
-  const inkBg = "#12141C"
-  const textOnDark = "#F5F6FA"
-  const textOnDarkSoft = "rgba(245,246,250,0.6)"
-  const textOnDarkFaint = "rgba(245,246,250,0.42)"
-  const emerald = "#17C77E"
+export default function TakeHomeCard({ income, tax }) {
+  const { ink, emerald, amber } = theme
+
+  const hasIncome = income > 0
+  const takeHome = Math.max(income - tax, 0)
+  const takePct = hasIncome ? (takeHome / income) * 100 : 100
+  const taxPct = hasIncome ? 100 - takePct : 0
 
   return (
-    <div className="rounded-2xl p-6" style={{ backgroundColor: inkBg, color: textOnDark, boxShadow: "0 24px 48px -28px rgba(18,20,28,0.5)" }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
-        .itr-sans { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
-        .itr-mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
-      `}</style>
+    <div
+      className="relative overflow-hidden rounded-3xl p-6 sm:p-8"
+      style={{ backgroundColor: ink, boxShadow: '0 24px 50px -28px rgba(18,20,28,0.6)' }}
+    >
+      <div
+        className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full blur-3xl"
+        style={{ background: `radial-gradient(circle, ${emerald}, transparent 70%)`, opacity: 0.28 }}
+        aria-hidden="true"
+      />
 
-      <p className="itr-sans text-sm font-medium" style={{ color: textOnDarkFaint }}>Estimated take-home</p>
-      <h3 className="itr-mono mt-2 text-3xl font-bold">&#8377;{takeHome.toLocaleString('en-IN')}</h3>
-      <p className="itr-sans mt-1 text-sm" style={{ color: textOnDarkFaint }}>After estimated income tax</p>
+      <div className="relative">
+        <h3 className="itr-sans text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.7)' }}>
+          Your estimated take-home
+        </h3>
 
-      <div className="mt-7 grid grid-cols-2 gap-3">
-        <div className="rounded-xl p-4" style={{ backgroundColor: "rgba(245,246,250,0.08)" }}>
-          <p className="itr-mono text-xs" style={{ color: textOnDarkFaint }}>Monthly</p>
-          <p className="itr-mono mt-1 font-bold">&#8377;{monthly.toLocaleString('en-IN')}</p>
+        <div className="mt-3 flex flex-wrap items-end gap-x-6 gap-y-3">
+          <p aria-live="polite" className="itr-display text-4xl font-medium tracking-tight text-white sm:text-5xl">
+            {formatINR(takeHome)}
+            <span className="itr-sans ml-2 text-sm font-medium" style={{ color: 'rgba(255,255,255,0.6)' }}>
+              / year
+            </span>
+          </p>
         </div>
 
-        <div className="rounded-xl p-4" style={{ backgroundColor: `${emerald}1F` }}>
-          <p className="itr-mono text-xs" style={{ color: emerald }}>Savings potential</p>
-          <p className="itr-sans mt-1 font-bold" style={{ color: emerald }}>Explore &rarr;</p>
+        <p className="itr-sans mt-2 text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>
+          That is roughly{' '}
+          <span className="font-semibold text-white">{formatINR(takeHome / 12)}</span> per month.
+        </p>
+
+        {/* Split bar */}
+        <div
+          className="mt-6 flex h-3 w-full overflow-hidden rounded-full"
+          style={{ backgroundColor: 'rgba(255,255,255,0.12)' }}
+          role="img"
+          aria-label={`${takePct.toFixed(0)}% take-home, ${taxPct.toFixed(0)}% tax`}
+        >
+          <div className="itr-bar h-full" style={{ width: `${takePct}%`, backgroundColor: emerald }} />
+          <div className="itr-bar h-full" style={{ width: `${taxPct}%`, backgroundColor: amber }} />
+        </div>
+
+        <div className="itr-sans mt-3 flex flex-wrap gap-x-6 gap-y-1 text-xs" style={{ color: 'rgba(255,255,255,0.75)' }}>
+          <span className="inline-flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: emerald }} />
+            Take-home {takePct.toFixed(0)}%
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: amber }} />
+            Tax {taxPct.toFixed(0)}%
+          </span>
         </div>
       </div>
     </div>

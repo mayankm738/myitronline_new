@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' })
+  const [errors, setErrors] = useState({})
 
   const bg = "#F5F6FA"
   const paper = "#FFFFFF"
@@ -23,11 +24,77 @@ export default function RegisterPage() {
 
   const handleChange = (event) => {
     const { name, value } = event.target
-    setForm((current) => ({ ...current, [name]: value }))
+
+    setForm((current) => ({
+      ...current,
+      [name]: value
+    }))
+
+    if (errors[name]) {
+      setErrors((current) => ({
+        ...current,
+        [name]: ''
+      }))
+    }
+
+    if (name === 'password' && errors.confirmPassword) {
+      setErrors((current) => ({
+        ...current,
+        confirmPassword: ''
+      }))
+    }
+  }
+
+  const validateForm = () => {
+    const newErrors = {}
+
+    const name = form.name.trim()
+    const email = form.email.trim()
+    const password = form.password
+    const confirmPassword = form.confirmPassword
+
+    // Name validation
+    if (!name) {
+      newErrors.name = 'Full name is required.'
+    } else if (name.length < 2) {
+      newErrors.name = 'Full name must be at least 2 characters.'
+    } else if (!/^[A-Za-z ]+$/.test(name)) {
+      newErrors.name = 'Full name can only contain letters and spaces.'
+    }
+
+    // Email validation
+    if (!email) {
+      newErrors.email = 'Email address is required.'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = 'Please enter a valid email address.'
+    }
+
+    // Password validation
+    if (!password) {
+      newErrors.password = 'Password is required.'
+    } else if (password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters.'
+    }
+
+    // Confirm password validation
+    if (!confirmPassword) {
+      newErrors.confirmPassword = 'Please confirm your password.'
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match.'
+    }
+
+    setErrors(newErrors)
+
+    return Object.keys(newErrors).length === 0
   }
 
   const handleSubmit = (event) => {
     event.preventDefault()
+
+    if (!validateForm()) {
+      return
+    }
+
     console.log(form)
   }
 
@@ -98,21 +165,40 @@ export default function RegisterPage() {
             <h2 className="itr-display text-3xl font-medium" style={{ color: ink }}>Create your account</h2>
             <p className="itr-sans mt-2 text-sm" style={{ color: inkSoft }}>Start your simpler tax filing journey.</p>
 
-            <form onSubmit={handleSubmit} className="itr-sans mt-8 space-y-5">
+            <form
+              onSubmit={handleSubmit}
+              className="itr-sans mt-8 space-y-5"
+              noValidate
+            >
               <div>
                 <label htmlFor="name" className="mb-2 block text-sm font-semibold" style={{ color: ink }}>Full name</label>
                 <input id="name" name="name" type="text" value={form.name} onChange={handleChange} placeholder="Your full name" required className="itr-input w-full rounded-xl px-4 py-3.5 text-sm" style={{ border: `1px solid ${line}`, backgroundColor: bg, color: ink }} />
+                {errors.name && (
+                  <p className="mt-1.5 text-xs font-medium text-red-600">
+                    {errors.name}
+                  </p>
+                )}
               </div>
 
               <div>
                 <label htmlFor="register-email" className="mb-2 block text-sm font-semibold" style={{ color: ink }}>Email address</label>
                 <input id="register-email" name="email" type="email" value={form.email} onChange={handleChange} placeholder="you@example.com" required className="itr-input w-full rounded-xl px-4 py-3.5 text-sm" style={{ border: `1px solid ${line}`, backgroundColor: bg, color: ink }} />
+                {errors.email && (
+                  <p className="mt-1.5 text-xs font-medium text-red-600">
+                    {errors.email}
+                  </p>
+                )}
               </div>
 
               <div>
                 <label htmlFor="register-password" className="mb-2 block text-sm font-semibold" style={{ color: ink }}>Password</label>
                 <div className="relative">
                   <input id="register-password" name="password" type={showPassword ? 'text' : 'password'} value={form.password} onChange={handleChange} placeholder="Create a password" required minLength={8} className="itr-input w-full rounded-xl px-4 py-3.5 pr-20 text-sm" style={{ border: `1px solid ${line}`, backgroundColor: bg, color: ink }} />
+                  {errors.password && (
+                    <p className="mt-1.5 text-xs font-medium text-red-600">
+                      {errors.password}
+                    </p>
+                  )}
                   <button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 text-xs font-semibold" style={{ color: inkFaint }}>{showPassword ? 'Hide' : 'Show'}</button>
                 </div>
                 <p className="itr-mono mt-2 text-xs" style={{ color: inkFaint }}>Use at least 8 characters.</p>
@@ -121,6 +207,11 @@ export default function RegisterPage() {
               <div>
                 <label htmlFor="confirm-password" className="mb-2 block text-sm font-semibold" style={{ color: ink }}>Confirm password</label>
                 <input id="confirm-password" name="confirmPassword" type="password" value={form.confirmPassword} onChange={handleChange} placeholder="Confirm your password" required className="itr-input w-full rounded-xl px-4 py-3.5 text-sm" style={{ border: `1px solid ${line}`, backgroundColor: bg, color: ink }} />
+                {errors.confirmPassword && (
+                  <p className="mt-1.5 text-xs font-medium text-red-600">
+                    {errors.confirmPassword}
+                  </p>
+                )}
               </div>
 
               <button type="submit" className="itr-cta w-full rounded-xl px-5 py-3.5 text-sm font-bold" style={{ backgroundColor: emerald, color: "#FFFFFF" }}>Create Account</button>

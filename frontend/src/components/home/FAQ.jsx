@@ -23,7 +23,7 @@ export default function FAQ() {
   const emeraldSoft = "rgba(14,157,99,0.10)"
 
   return (
-    <section id="faq" className="px-5 py-20 sm:px-8 lg:px-12 lg:py-28" style={{ backgroundColor: paper }}>
+    <section id="faq" className="px-5 py-20 sm:px-8 lg:px-12 lg:py-12" style={{ backgroundColor: paper }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
         .itr-display { font-family: 'Fraunces', ui-serif, Georgia, serif; font-optical-sizing: auto; }
